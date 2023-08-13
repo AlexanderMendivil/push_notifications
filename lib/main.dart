@@ -18,11 +18,16 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   @override
   void initState() {
     // TODO: implement initState
     PushNotificationService.messagesStream.listen((message) { 
-      print('MyApp: $message');
+
+      navigatorKey.currentState?.pushNamed('message', arguments: message);
+      final snackBar = SnackBar(content: Text(message));
+      scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
     });
     super.initState();
   }
@@ -31,6 +36,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      navigatorKey: navigatorKey,
+      scaffoldMessengerKey: scaffoldMessengerKey,
       debugShowCheckedModeBanner: false,
       initialRoute: 'home',
       routes: {
